@@ -1,53 +1,45 @@
 //DOM
-const items = document.querySelector("#items");
-
-//fetch api
-async function getProducts() {
-  try {
-    const response = await fetch("http://localhost:3000/api/products");
-    const data = await response.json();
-    displayProducts(data);
-  } 
-  
-  catch (e) {
-    console.log(e);
-  }
-}
-
 getProducts();
 
+//fetch api
+function getProducts() {
+  fetch("http://localhost:3000/api/products")
+    .then((response) => response.json().then((data) => {
+      for (const item of data) {
+        displayProducts(item.name, item.imageUrl, item._id, item.description, item.altTxt);
+      }
+    })).catch((e) => showError());
+  } 
+
 //create and display items in index html
-function displayProducts(data) {
+function displayProducts(name, image, id, description, altTxt) {
 
-  //loop through data's array
-  for (const i of data) {
+  //create link
+  const newLink = document.createElement("a");
+  newLink.setAttribute("href", `./product.html?id=${id}`);
 
-    //create elements pour each array index
-    const link = document.createElement("a");
-    const article = document.createElement("article");
-    const img = document.createElement("img");
-    const h3 = document.createElement("h3");
-    const p = document.createElement("p");
+  // create article
+  const newArticle = document.createElement("article");
 
-    //assign elements
-    link.href = `./product.html?id=${i._id}`;
-    img.src = i.imageUrl;
-    img.alt = i.altTxt;
-    h3.textContent = i.name;
-    p.textContent = i.description;
+  // create img
+  const newImg = document.createElement("img");
+  newImg.setAttribute("src", image);
+  newImg.setAttribute("alt", altTxt);
+  newArticle.appendChild(newImg);
 
-    //appended child layout
-    items.appendChild(link);
-    link.appendChild(article);
-    article.appendChild(img);
-    article.appendChild(h3);
-    article.appendChild(p);
-  }
-}
+  // create h3
+  const newh3 = document.createElement("h3");
+  newh3.innerText = name;
+  newArticle.appendChild(newh3);
 
-function showError() {
-  const articleError = document.createElement("article");
-  articleError.innerHTML = "Aucun Article disponible, réessayez plus tard";
-  const parent = document.getElementById("#items");
-  parent.appendChild(articleError);
+  // create p
+  const newP = document.createElement("p");
+  newP.innerText = description;
+  newArticle.appendChild(newP);
+  console.log (description);
+
+  // load elements
+  newLink.appendChild(newArticle);
+  const parent = document.getElementById("items");
+  parent.appendChild(newLink);
 }
