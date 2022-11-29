@@ -103,3 +103,31 @@ function deleteItemProduct() {
 }
 
 deleteItemProduct();
+
+
+/// Function to change quantity in the cart
+function changeQty (){
+
+  // "targetQty" targets the input ".itemQuantity" via "querySelectorAll" that allows to select all the inputs
+  const targetQty = document.querySelectorAll('.itemQuantity')
+
+  // Loop to check for any modification in the input + updates the cart if there are modifications
+    for (let i = 0; i < targetQty.length; i++){
+        targetQty[i].addEventListener('input', function(){
+
+        // changeQty gets the input's value
+        let changeQty = targetQty[i].value;
+
+        // input's value sent to localStorage
+        localStorageProduct[i].productNumber = changeQty;
+
+        // changes applied in the localStorage
+        localStorage.setItem("product", JSON.stringify(localStorageProduct));
+
+        // reloads the page to apply the modifications
+        location.reload();
+      });
+    };
+};
+
+changeQty();
