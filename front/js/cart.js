@@ -106,28 +106,187 @@ deleteItemProduct();
 
 
 /// Function to change quantity in the cart
-function changeQty (){
+function changeQty() {
 
-  // "targetQty" targets the input ".itemQuantity" via "querySelectorAll" that allows to select all the inputs
-  const targetQty = document.querySelectorAll('.itemQuantity')
+    // "targetQty" targets the input ".itemQuantity" via "querySelectorAll" that allows to select all the inputs
+    const targetQty = document.querySelectorAll('.itemQuantity')
 
-  // Loop to check for any modification in the input + updates the cart if there are modifications
-    for (let i = 0; i < targetQty.length; i++){
-        targetQty[i].addEventListener('input', function(){
+    // Loop to check for any modification in the input + updates the cart if there are modifications
+    for (let i = 0; i < targetQty.length; i++) {
+        targetQty[i].addEventListener('input', function () {
 
-        // changeQty gets the input's value
-        let changeQty = targetQty[i].value;
+            // changeQty gets the input's value
+            let changeQty = targetQty[i].value;
 
-        // input's value sent to localStorage
-        localStorageProduct[i].productNumber = changeQty;
+            // input's value sent to localStorage
+            localStorageProduct[i].productNumber = changeQty;
 
-        // changes applied in the localStorage
-        localStorage.setItem("product", JSON.stringify(localStorageProduct));
+            // changes applied in the localStorage
+            localStorage.setItem("product", JSON.stringify(localStorageProduct));
 
-        // reloads the page to apply the modifications
-        location.reload();
-      });
+            // reloads the page to apply the modifications
+            location.reload();
+        });
     };
 };
 
 changeQty();
+
+
+////////// FORM ///////////
+
+
+// Regex to confirm form
+const emailRegex = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+const addressRegex = /^[A-Za-z0-9\s]{5,50}$/;
+const cityRegex = /^[A-Za-z\s]{5,50}$/
+
+// submitForm sends form
+function submitForm(e) {
+
+    // "e.preventDefault();" prevents default behaviour
+    e.preventDefault();
+
+    // variable to check if user filled the form correctly
+    let check = true;
+
+    // function checkInput checks regex, if incorrect input = error message
+    function checkInput() {
+
+        // targets needed information to fill the form
+        const prenom = document.getElementById('firstName');
+        const prenomErreur = document.getElementById('firstNameErrorMsg');
+        const nom = document.getElementById('lastName');
+        const nomErreur = document.getElementById('lastNameErrorMsg');
+        const adresse = document.getElementById('address');
+        const adresseErreur = document.getElementById('addressErrorMsg');
+        const ville = document.getElementById('city');
+        const villeErreur = document.getElementById('cityErrorMsg')
+        const mail = document.getElementById('email');
+        const mailErreur = document.getElementById('emailErrorMsg')
+
+        const prenomValue = prenom.value.trim();
+        const nomValue = nom.value.trim();
+        const adresseValue = adresse.value.trim();
+        const villeValue = ville.value.trim();
+        const mailValue = mail.value.trim();
+
+        // On applique les regex via .match et des conditions if / else.
+        if (mailValue.match(emailRegex)) {
+            mailErreur.innerText = "";
+        } else {
+            check = false;
+            mailErreur.innerText = "Veuillez entrer une adresse mail valide."
+        }
+
+        if (adresseValue.match(addressRegex)) {
+            adresseErreur.innerText = "";
+        } else {
+            check = false;
+            adresseErreur.innerText = "Veuillez entrer une adresse valide."
+        }
+
+        if (villeValue.match(cityRegex)) {
+            villeErreur.innerText = "";
+        } else {
+            check = false;
+            villeErreur.innerText = "Veuillez entrer un nom de ville correct."
+        }
+
+        if (prenomValue.length < 3 || prenomValue.length > 15) {
+            check = false;
+            prenomErreur.innerText = "Le prénom doit contenir entre 3 et 15 caractères"
+        } else if (prenomValue.length >= 3) {
+            prenomErreur.innerText = "";
+        }
+
+        if (nomValue.length < 3 || nomValue.length > 15) {
+            check = false;
+            nomErreur.innerText = "Le nom doit contenir entre 3 et 15 caractères"
+        } else if (nomValue.length >= 3) {
+            nomErreur.innerText = ""
+        }
+    }
+
+    checkInput();
+
+
+    /// Function "postApi" to check if "check = true" = sends the form
+    function postApi() {
+        if (check === true) {
+
+            if (localStorageProduct.length === 0) {
+                alert("Please select a product")
+                return
+            }
+
+            // const body gets "resquestBody()"'s table defined a bit lower
+            const body = requestBody();
+
+            // Fetch API to POST data to the server
+            fetch("http://localhost:3000/api/products/order", {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+
+                .then((res) => res.json())
+
+                .then((data) => {
+                    const orderId = data.orderId
+
+                    // Sends us to Confirmation page if all inputs are correctly filled
+                    window.location.href = "/front/html/confirmation.html" + "?orderId=" + orderId
+                    return console.log(data)
+                })
+
+                // catch error
+                .catch((err) => alert("Erreur  d'envoi du formulaire. Veuillez réessayer plus tard."))
+        }
+    }
+
+    postApi();
+
+    
+    // requestBody gets value from the inputs
+    function requestBody() {
+        const firstNameInput = document.querySelector('#firstName')
+        const firstName = firstNameInput.value
+
+        const lastNameInput = document.querySelector('#lastName')
+        const lastName = lastNameInput.value
+
+        const addressInput = document.querySelector('#address')
+        const address = addressInput.value
+
+        const cityInput = document.querySelector('#city')
+        const city = cityInput.value
+
+        const emailInput = document.querySelector('#email')
+        const email = emailInput.value
+
+        // Loop to get idProducts
+        let idProducts = [];
+        for (let i = 0; i < localStorageProduct.length; i++) {
+            idProducts.push(localStorageProduct[i].idDuProduit)
+        }
+
+        // Objet "contact" where we put inputs' values + Object "products" with loop's idProducts
+        const body = {
+            contact: {
+                firstName: firstName,
+                lastName: lastName,
+                address: address,
+                city: city,
+                email: email,
+            },
+            products: idProducts,
+        }
+        return body
+    }
+}
+
+// call function "submitBtn" to confirm cart + contact form
+submitBtn.addEventListener("click", (e) => submitForm(e))
