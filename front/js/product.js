@@ -1,74 +1,3 @@
-/// function to add object put into the cart into local storage
-(async function addProductInCart() {
-  const itemId = getItemId();
-  const item = await getItem(itemId);
-  showItems(item);
-  const targetButton = document.getElementById('addToCart');
-  const targetQuantity = document.querySelector('#quantity');
-
-  // button "add to cart" click listener
-  targetButton.addEventListener('click', (event) => {
-    event.preventDefault();
-
-    // item's data constant
-    const itemProduct = {
-      alternativeTxt: item.altTxt,
-      productId: item._id,
-      productImg: item.imageUrl,
-      productName: item.name,
-      productColor: colors.value,
-      productDescription: item.description,
-      productPrice: item.price,
-      productNumber: targetQuantity.value,
-    };
-
-    // localStorageProduct stocks localStorage's keys and values, we parse it into JSON 
-    // -> JSON.parse() analyses JSON string to construct JS value/object described in the string
-    let localStorageProduct = JSON.parse(localStorage.getItem("product"));
-
-    // function "storageProduct" sends "itemProduct"'s data into "localStorage".
-    const storageProduct = () => {
-      let clickedProduct = localStorageProduct.find(p => p.productId == itemProduct.productId && p.productColor == itemProduct.productColor)
-
-      // sends data into "itemProduct" then adds them to the localStorage
-      if (clickedProduct = undefined) {
-        let addQuantity =
-          parseInt(itemProduct.productNumber) + parseInt(clickedProduct.productNumber)
-        clickedProduct.productNumber = addQuantity
-      } else {
-        itemProduct.productNumber = itemProduct.productNumber;
-        localStorageProduct.push(itemProduct)
-      }
-
-      // "setItem" adds object(key+value) into local storage
-      // JSON.stringify converts value JavaScript into JSON string
-      localStorage.setItem("product", JSON.stringify(localStorageProduct));
-    }
-
-    // cart confirmed message
-    const cartConfirm = () => {
-      if (window.confirm(`${itemProduct.productName} couleur ${itemProduct.productColor} a bien été ajouté au panier.
-          `)) {
-        window.location.href = "cart.html"
-      } else {
-        window.location.href = "index.html"
-      }
-    }
-
-    // if ok -> cart, else -> index
-    if (localStorageProduct) {
-      storageProduct()
-      cartConfirm()
-    } else {
-      localStorageProduct = [];
-      storageProduct()
-      cartConfirm()
-    };
-  })
-})(
-);
-
-
 // Get Id from URL
 function getItemId() {
   return new URL(location.href).searchParams.get("id")
@@ -106,3 +35,71 @@ function showItems(item) {
   });
 }
 
+///function to add object put into the cart into local storage
+(async function addProductInCart() {
+  const itemId = getItemId();
+  const item = await getItem(itemId);
+  showItems(item);
+  const targetButton = document.getElementById('addToCart');
+  const targetQuantity = document.querySelector('#quantity');
+
+  // button "add to cart" click listener
+  targetButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    // item's data constant
+    const itemProduct = {
+      alternativeTxt: item.altTxt,
+      productId: item._id,
+      productImg: item.imageUrl,
+      productName: item.name,
+      productColor: colors.value,
+      productDescription: item.description,
+      productPrice: item.price,
+      productQuantity: targetQuantity.value,
+    };
+
+    // localStorageProduct stocks localStorage's keys and values, we parse it into JSON 
+    // -> JSON.parse() analyses JSON string to construct JS value/object described in the string
+    let localStorageProduct = JSON.parse(localStorage.getItem("product"));
+
+    // function "storageProduct" sends "itemProduct"'s data into "localStorage".
+    const storageProduct = () => {
+      let clickedProduct = localStorageProduct.find(p => p.productId == itemProduct.productId && p.productColor == itemProduct.productColor)
+
+      // sends data into "itemProduct" then adds them to the localStorage
+      if (clickedProduct = undefined) {
+        let addQuantity = parseInt(itemProduct.productQuantity) + parseInt(clickedProduct.productQuantity)
+        clickedProduct.productQuantity = addQuantity
+      } else {
+        itemProduct.productQuantity = itemProduct.productQuantity;
+        localStorageProduct.push(itemProduct)
+      }
+
+      // "setItem" adds object(key+value) into local storage
+      // JSON.stringify converts value JavaScript into JSON string
+      localStorage.setItem("product", JSON.stringify(localStorageProduct));
+    }
+
+    // cart confirmed message
+    const cartConfirm = () => {
+      if (window.confirm(`${itemProduct.productName} couleur ${itemProduct.productColor} a bien été ajouté au panier.
+          `)) {
+        window.location.href = "cart.html"
+      } else {
+        window.location.href = "index.html"
+      }
+    }
+
+    // if ok -> cart, else -> index
+    if (localStorageProduct) {
+      storageProduct()
+      cartConfirm()
+    } else {
+      localStorageProduct = [];
+      storageProduct()
+      cartConfirm()
+    };
+  })
+})(
+);
