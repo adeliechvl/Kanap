@@ -29,17 +29,17 @@ function addProductToCart() {
     // totalFullCart & totalCart calculate sum of the product in the cart
     for (i = 0; i < localStorageProduct.length; i++) {
 
-        // totalCart (valeur 0) is multiplied by productNumber and productPrice to get total price
-        totalCart += localStorageProduct[i].productNumber * localStorageProduct[i].productPrice
+        // totalCart (valeur 0) is multiplied by productQuantity and productPrice to get total price
+        totalCart += localStorageProduct[i].productQuantity * localStorageProduct[i].productPrice
 
         // price calculation in the cart
-        totalFullCart += parseInt(localStorageProduct[i].productNumber, 10)
+        totalFullCart += parseInt(localStorageProduct[i].productQuantity, 10)
 
         // we send everything in the HTML with innerHTML method
         fullCart = getCartItem.innerHTML = fullCart + `
         <article class="cart__item" data-id=${localStorageProduct[i].productId} data-color="${localStorageProduct[i].productColor}">
             <div class="cart__item__img">
-                <img src="${localStorageProduct[i].productImg}" alt="${localStorageProduct[i].textAlternatif}">
+                <img src="${localStorageProduct[i].productImg}" alt="${localStorageProduct[i].alternativeTxt}">
             </div>
             <div class="cart__item__content">
                 <div class="cart__item__content__description">
@@ -51,7 +51,7 @@ function addProductToCart() {
                 <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                         <p>Quantité</p>
-                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${localStorageProduct[i].productNumber}">
+                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${localStorageProduct[i].productQuantity}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                         <p class="deleteItem">Supprimer</p>
@@ -119,7 +119,7 @@ function changeQty() {
             let changeQty = targetQty[i].value;
 
             // input's value sent to localStorage
-            localStorageProduct[i].productNumber = changeQty;
+            localStorageProduct[i].productQuantity = changeQty;
 
             // changes applied in the localStorage
             localStorage.setItem("product", JSON.stringify(localStorageProduct));
@@ -193,16 +193,16 @@ function submitForm(e) {
             villeErreur.innerText = "Veuillez entrer un nom de ville correct."
         }
 
-        if (prenomValue.length < 3 || prenomValue.length > 15) {
+        if (prenomValue.length < 3 || prenomValue.length > 20) {
             check = false;
-            prenomErreur.innerText = "Le prénom doit contenir entre 3 et 15 caractères"
+            prenomErreur.innerText = "Le prénom doit contenir entre 3 et 20 caractères"
         } else if (prenomValue.length >= 3) {
             prenomErreur.innerText = "";
         }
 
-        if (nomValue.length < 3 || nomValue.length > 15) {
+        if (nomValue.length < 3 || nomValue.length > 30) {
             check = false;
-            nomErreur.innerText = "Le nom doit contenir entre 3 et 15 caractères"
+            nomErreur.innerText = "Le nom doit contenir entre 3 et 30 caractères"
         } else if (nomValue.length >= 3) {
             nomErreur.innerText = ""
         }
@@ -211,7 +211,7 @@ function submitForm(e) {
     checkInput();
 
 
-    /// Function "postApi" to check if "check = true" = sends the form
+/// Function "postApi" to check if "check = true" = sends the form
     function postApi() {
         if (check === true) {
 
@@ -233,22 +233,22 @@ function submitForm(e) {
             })
 
                 .then((res) => res.json())
-
                 .then((data) => {
                     const orderId = data.orderId
 
                     // Sends us to Confirmation page if all inputs are correctly filled
-                    window.location.href = "/front/html/confirmation.html" + "?orderId=" + orderId
-                    return console.log(data)
+                    location.href = `./confirmation.html?orderId=${orderId}`
                 })
 
                 // catch error
-                .catch((err) => alert("Erreur  d'envoi du formulaire. Veuillez réessayer plus tard."))
+                .catch((err) => alert("Erreur d'envoi du formulaire. Veuillez réessayer plus tard."))
+
+                // empty the localStorage if no error
+                .then(localStorage.removeItem("products"))
         }
     }
 
     postApi();
-
     
     // requestBody gets value from the inputs
     function requestBody() {
