@@ -237,7 +237,7 @@ function submitForm(e) {
                     const orderId = data.orderId
 
                     // Sends us to Confirmation page if all inputs are correctly filled
-                    location.href = `./confirmation.html?orderId=${orderId}`
+                    window.location.href = "../html/confirmation.html" + "?orderId=" + orderId
                 })
 
                 // catch error
