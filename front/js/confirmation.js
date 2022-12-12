@@ -1,23 +1,8 @@
-// "showOrder" displays order confirmation + order number
-showOrderId = () => {
+// Récupération du numéro de commande dans l'url
+const url = new URL(location.href)
+const urlOrderId = url.searchParams.get("orderId")
+console.log(urlOrderId);
 
-    // get orderId from the url
-    const queryString = window.location.search
-    const urlParams = new URLSearchParams(queryString)
-    const orderId = urlParams.get("orderId")
-
-    // displays the url into "targetOrderId"
-    const targetOrderId = document.querySelector('#orderId')
-    targetOrderId.textContent = `${orderId}`
-}
-
-showOrderId();
-
-
-// Function to delete products in the localStorage
-deleteLocalStorage = () => {
-    const targetLocalStorage = window.localStorage;
-    targetLocalStorage.clear();
-}
-
-deleteLocalStorage();
+// Injection sur le DOM du numéro de commande
+const orderId = document.getElementById("orderId")
+orderId.innerText = urlOrderId

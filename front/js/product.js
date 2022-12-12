@@ -42,64 +42,97 @@ function showItems(item) {
   showItems(item);
   const targetButton = document.getElementById('addToCart');
   const targetQuantity = document.querySelector('#quantity');
+  const select = document.getElementById("colors");
 
   // button "add to cart" click listener
   targetButton.addEventListener('click', (event) => {
     event.preventDefault();
 
-    // item's data constant
-    const itemProduct = {
-      alternativeTxt: item.altTxt,
-      productId: item._id,
-      productImg: item.imageUrl,
-      productName: item.name,
-      productColor: colors.value,
-      productDescription: item.description,
-      productPrice: item.price,
-      productQuantity: targetQuantity.value,
-    };
+    // verify if color and quantity have been selected, else function "applyStyle"
+    const productColor = select.value;
+    const productQuantity = document.getElementById("quantity");
+    const quantity = productQuantity.value;
+    if (productColor == "" && (quantity < 1 || quantity > 50)) {
+      applyStyle(select, "red", 2, productQuantity, "red", 2);
+      alert("Merci de sélectionner une couleur disponible ainsi qu'une quantité.");
+    }
+    else if (productColor == "") {
+      applyStyle(select, "red", 2, productQuantity, "black", 1);
+      alert("Veuillez sélectionner une couleur parmi les options proposées");
+    }
+    else if (quantity < 1 || quantity > 100) {
+      if (quantity > 100) {
+        alert("Attention, vous ne pouvez pas commander plus de 50 fois cet article. Veuillez nous contacter par email ou par téléphone pour une commande spéciale.");
+      }
+      else {
+        alert("Merci de saisir un nombre d'article(s) valide.")
+      }
+      applyStyle(select, "black", 1, productQuantity, "red", 2);
+    }
+    else {
+      applyStyle(select, "black", 1, productQuantity, "black", 1);
 
-    // localStorageProduct stocks localStorage's keys and values, we parse it into JSON 
-    // -> JSON.parse() analyses JSON string to construct JS value/object described in the string
-    let localStorageProduct = JSON.parse(localStorage.getItem("product"));
+      // item's data constant
+      const itemProduct = {
+        alternativeTxt: item.altTxt,
+        productId: item._id,
+        productImg: item.imageUrl,
+        productName: item.name,
+        productColor: colors.value,
+        productDescription: item.description,
+        productPrice: item.price,
+        productQuantity: targetQuantity.value,
+      };
 
-    // function "storageProduct" sends "itemProduct"'s data into "localStorage".
-    const storageProduct = () => {
-      let clickedProduct = localStorageProduct.find(p => p.productId == itemProduct.productId && p.productColor == itemProduct.productColor)
+      // localStorageProduct stocks localStorage's keys and values, we parse it into JSON 
+      // -> JSON.parse() analyses JSON string to construct JS value/object described in the string
+      let localStorageProduct = JSON.parse(localStorage.getItem("product"));
 
-      // sends data into "itemProduct" then adds them to the localStorage
-      if (clickedProduct = undefined) {
-        let addQuantity = parseInt(itemProduct.productQuantity) + parseInt(clickedProduct.productQuantity)
-        clickedProduct.productQuantity = addQuantity
-      } else {
-        itemProduct.productQuantity = itemProduct.productQuantity;
-        localStorageProduct.push(itemProduct)
+      // function "storageProduct" sends "itemProduct"'s data into "localStorage".
+      const storageProduct = () => {
+        let clickedProduct = localStorageProduct.find(p => p.productId == itemProduct.productId && p.productColor == itemProduct.productColor)
+
+        // sends data into "itemProduct" then adds them to the localStorage
+        if (clickedProduct = undefined) {
+          let addQuantity = parseInt(itemProduct.productQuantity) + parseInt(clickedProduct.productQuantity)
+          clickedProduct.productQuantity = addQuantity
+        } else {
+          itemProduct.productQuantity = itemProduct.productQuantity;
+          localStorageProduct.push(itemProduct)
+        }
+
+        // "setItem" adds object(key+value) into local storage
+        // JSON.stringify converts value JavaScript into JSON string
+        localStorage.setItem("product", JSON.stringify(localStorageProduct));
       }
 
-      // "setItem" adds object(key+value) into local storage
-      // JSON.stringify converts value JavaScript into JSON string
-      localStorage.setItem("product", JSON.stringify(localStorageProduct));
-    }
-
-    // cart confirmed message
-    const cartConfirm = () => {
-      if (window.confirm(`${itemProduct.productName} couleur ${itemProduct.productColor} a bien été ajouté au panier.
+      /// Cart confirmed message
+      const cartConfirm = () => {
+        if (window.confirm(`${itemProduct.productName} couleur ${itemProduct.productColor} a bien été ajouté au panier.
           `)) {
-        window.location.href = "cart.html"
-      } else {
-        window.location.href = "index.html"
+          window.location.href = "cart.html"
+        } else {
+          window.location.href = "index.html"
+        }
       }
-    }
 
-    // if ok -> cart, else -> index
-    if (localStorageProduct) {
-      storageProduct()
-      cartConfirm()
-    } else {
-      localStorageProduct = [];
-      storageProduct()
-      cartConfirm()
-    };
+      // if ok -> cart, else -> index
+      if (localStorageProduct) {
+        storageProduct()
+        cartConfirm()
+      } else {
+        localStorageProduct = [];
+        storageProduct()
+        cartConfirm()
+      };
+    }
   })
+
+  function applyStyle(element1, color1, size1, element2, color2, size2) {
+    element1.style.borderColor = color1;
+    element1.style.borderWidth = `${size1}px`;
+    element2.style.borderColor = color2;
+    element2.style.borderWidth = `${size2}px`;
+  }
 })(
 );
