@@ -267,13 +267,13 @@ function submitForm(e) {
         const emailInput = document.querySelector('#email')
         const email = emailInput.value
 
-        // Loop to get idProducts
-        let idProducts = [];
+        // Loop to get productId
+        let productId = [];
         for (let i = 0; i < localStorageProduct.length; i++) {
-            idProducts.push(localStorageProduct[i].idDuProduit)
+            productId.push(localStorageProduct[i].productId)
         }
 
-        // Objet "contact" where we put inputs' values + Object "products" with loop's idProducts
+        // Objet "contact" where we put inputs' values + Object "products" with loop's productId
         const body = {
             contact: {
                 firstName: firstName,
@@ -282,7 +282,7 @@ function submitForm(e) {
                 city: city,
                 email: email,
             },
-            products: idProducts,
+            products: productId,
         }
         return body
     }
