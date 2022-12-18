@@ -6,3 +6,10 @@ console.log(urlOrderId);
 // Injection sur le DOM du numéro de commande
 const orderId = document.getElementById("orderId")
 orderId.innerText = urlOrderId
+
+deleteLocalStorage = () => {
+    const targetLocalStorage = window.localStorage;
+    targetLocalStorage.clear();
+}
+
+deleteLocalStorage();

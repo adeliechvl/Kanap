@@ -242,9 +242,6 @@ function submitForm(e) {
 
                 // catch error
                 .catch((err) => alert("Erreur d'envoi du formulaire. Veuillez réessayer plus tard."))
-
-                // empty the localStorage if no error
-                .then(localStorage.removeItem("products"))
         }
     }
 
