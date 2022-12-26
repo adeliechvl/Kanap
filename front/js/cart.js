@@ -137,6 +137,7 @@ changeQty();
 
 
 // Regex to confirm form
+const namesRegex = /^[a-zA-Z-éèà]*$/;
 const emailRegex = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
 const addressRegex = /^[A-Za-z0-9\s]{5,50}$/;
 const cityRegex = /^[A-Za-z\s]{5,50}$/
@@ -172,6 +173,20 @@ function submitForm(e) {
         const mailValue = mail.value.trim();
 
         // On applique les regex via .match et des conditions if / else.
+        if (prenomValue.match(namesRegex)) {  
+            prenomErreur.innerText = ""
+        } else {
+            check = false;
+            prenomErreur.innerText = "Le prénom ne doit pas contenir ni de chiffre ni de caractère spécial";
+        }
+
+        if (nomValue.match(namesRegex)) {
+            nomErreur.innerText = ""
+        } else {
+            check = false;
+            nomErreur.innerText = "Le nom ne doit pas contenir ni de chiffre ni de caractère spécial"
+        }
+
         if (mailValue.match(emailRegex)) {
             mailErreur.innerText = "";
         } else {
@@ -191,20 +206,6 @@ function submitForm(e) {
         } else {
             check = false;
             villeErreur.innerText = "Veuillez entrer un nom de ville correct."
-        }
-
-        if (prenomValue.length < 3 || prenomValue.length > 20) {
-            check = false;
-            prenomErreur.innerText = "Le prénom doit contenir entre 3 et 20 caractères"
-        } else if (prenomValue.length >= 3) {
-            prenomErreur.innerText = "";
-        }
-
-        if (nomValue.length < 3 || nomValue.length > 30) {
-            check = false;
-            nomErreur.innerText = "Le nom doit contenir entre 3 et 30 caractères"
-        } else if (nomValue.length >= 3) {
-            nomErreur.innerText = ""
         }
     }
 
