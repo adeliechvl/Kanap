@@ -52,7 +52,7 @@ function showItems(item) {
     const productColor = select.value;
     const productQuantity = document.getElementById("quantity");
     const quantity = productQuantity.value;
-    if (productColor == "" && (quantity < 1 || quantity > 50)) {
+    if (productColor == "" && (quantity < 1 || quantity > 100)) {
       applyStyle(select, "red", 2, productQuantity, "red", 2);
       alert("Merci de sélectionner une couleur disponible ainsi qu'une quantité.");
     }
@@ -62,7 +62,7 @@ function showItems(item) {
     }
     else if (quantity < 1 || quantity > 100) {
       if (quantity > 100) {
-        alert("Attention, vous ne pouvez pas commander plus de 50 fois cet article. Veuillez nous contacter par email ou par téléphone pour une commande spéciale.");
+        alert("Attention, vous ne pouvez pas commander plus de 100 fois cet article.");
       }
       else {
         alert("Merci de saisir un nombre d'article(s) valide.")
