@@ -93,7 +93,7 @@ function showItems(item) {
         let clickedProduct = localStorageProduct.find(p => p.productId == itemProduct.productId && p.productColor == itemProduct.productColor)
 
         // sends data into "itemProduct" then adds them to the localStorage
-        if (clickedProduct = undefined) {
+        if (clickedProduct != undefined) {
           let addQuantity = parseInt(itemProduct.productQuantity) + parseInt(clickedProduct.productQuantity)
           clickedProduct.productQuantity = addQuantity
         } else {
